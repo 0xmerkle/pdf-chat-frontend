@@ -1,8 +1,5 @@
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
-import jwt from 'jsonwebtoken';
-
-const secretKey = 'your_secret_key';
 
 export const uploadFile = async (file: File) => {
   const authToken = await getAuth().currentUser?.getIdToken();
