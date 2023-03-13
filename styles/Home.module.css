@@ -207,7 +207,7 @@
 }
 
 .close-chat-button {
-  position: absolute;
+  position: relative;
   align-self: center;
 
   border: none;
@@ -217,10 +217,29 @@
   border-radius: 5px;
 
 }
+
+.util-button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+
+}
 .back-to-chat-button {
   position: relative;
   align-self: center;
 
+  border: none;
+  background-color: #b53f8a;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+
+}
+.context-button {
+  position: relative;
+  align-self: center;
+  margin-left: 10px;
   border: none;
   background-color: #b53f8a;
   color: #fff;

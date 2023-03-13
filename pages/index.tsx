@@ -19,7 +19,13 @@ const Home: NextPage = () => {
   const [showChat, setShowChat] = useState<boolean>(false);
   const isAuthed = userStore((state) => state.isAuthed);
   const [authed, setAuthed] = useState<boolean>(false);
+  const setMessages = userStore((state) => state.setMessages);
 
+  const getContextInfo = async () => {
+    const r = await getContextInfoFromDocuments();
+    console.log('r.data', r.data);
+    setMessages([{ from: 'chatbot', message: r.data.res }]);
+  };
   const handleCloseChat = () => setShowChat(false);
   const handleOpenChat = () => setShowChat(true);
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,9 +80,14 @@ const Home: NextPage = () => {
       {showChat && (
         <>
           {' '}
-          <button onClick={handleCloseChat} className={styles['close-chat-button']}>
-            Close Chat
-          </button>
+          <div className={styles['util-button-container']}>
+            <button onClick={handleCloseChat} className={styles['close-chat-button']}>
+              Close Chat
+            </button>
+            <button onClick={getContextInfo} className={styles['context-button']}>
+              What is the context?
+            </button>
+          </div>
           <Chat />{' '}
         </>
       )}
@@ -96,6 +107,8 @@ const Chat = () => {
     from: 'user',
     message: '',
   });
+  const chatMessages = userStore((state) => state.messages);
+  const setChatMessages = userStore((state) => state.setMessages);
   const [loading, setLoading] = useState<boolean>(false);
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -106,11 +119,11 @@ const Chat = () => {
   const getContextInfo = async () => {
     const r = await getContextInfoFromDocuments();
     console.log('r.data', r.data);
-    setMessages([...messages, { from: 'chatbot', message: r.data.res }]);
+    setChatMessages([...messages, { from: 'chatbot', message: r.data.res }]);
   };
 
   const handleMessageSend = async () => {
-    setMessages([...messages, message]);
+    setChatMessages([...messages, message]);
     setMessage({ from: 'user', message: '' });
     setLoading(true);
     let tmpMessage = message;
@@ -118,15 +131,15 @@ const Chat = () => {
     setLoading(false);
     console.log(r.data.res);
     const aiMessage = { from: 'chatbot', message: r.data.res };
-    setMessages([...messages, tmpMessage, aiMessage]);
+    setChatMessages([...messages, tmpMessage, aiMessage]);
   };
-  useEffect(() => {
-    getContextInfo();
-  }, []);
+  // useEffect(() => {
+  //   getContextInfo();
+  // }, []);
   return (
     <div>
       <div className={styles['chatbox-container']}>
-        {messages.map((message, index) => (
+        {chatMessages.map((message, index) => (
           <div
             key={index}
             className={
