@@ -1,13 +1,13 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import Layout from '../components/layout';
 import styles from '../styles/Home.module.css';
 import utilStyles from '../styles/utils.module.css';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { uploadFile, sendMessage } from '../api';
+import { uploadFile, sendMessage, getContextInfoFromDocuments } from '../api';
 import { auth } from '../firebase/firebase';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { userStore } from '../store/store';
@@ -18,8 +18,10 @@ const Home: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showChat, setShowChat] = useState<boolean>(false);
   const isAuthed = userStore((state) => state.isAuthed);
+  const [authed, setAuthed] = useState<boolean>(false);
 
   const handleCloseChat = () => setShowChat(false);
+  const handleOpenChat = () => setShowChat(true);
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const selectedFile = e.target.files?.[0];
@@ -36,7 +38,9 @@ const Home: NextPage = () => {
     }
     setLoading(false);
   };
-
+  useEffect(() => {
+    setAuthed(isAuthed);
+  }, [isAuthed]);
   return (
     <Layout home>
       <Head>
@@ -44,14 +48,20 @@ const Home: NextPage = () => {
       </Head>
       {!showChat && (
         <>
-          {!isAuthed && <p>Authenticate before using</p>}
+          {!authed ? (
+            <p>Authenticate before using</p>
+          ) : (
+            <button onClick={handleOpenChat} className={styles['back-to-chat-button']}>
+              Go to Chat
+            </button>
+          )}
           <section className={utilStyles.headingMd}>
             <p>Upload PDF</p>
             <form>
               <input
                 className={styles.uploadButton}
                 type="file"
-                disabled={!isAuthed}
+                disabled={!authed}
                 onChange={handleFileChange}
                 formEncType="multipart/form-data"
               />
@@ -93,6 +103,12 @@ const Chat = () => {
       handleMessageSend();
     }
   };
+  const getContextInfo = async () => {
+    const r = await getContextInfoFromDocuments();
+    console.log('r.data', r.data);
+    setMessages([...messages, { from: 'chatbot', message: r.data.res }]);
+  };
+
   const handleMessageSend = async () => {
     setMessages([...messages, message]);
     setMessage({ from: 'user', message: '' });
@@ -104,6 +120,9 @@ const Chat = () => {
     const aiMessage = { from: 'chatbot', message: r.data.res };
     setMessages([...messages, tmpMessage, aiMessage]);
   };
+  useEffect(() => {
+    getContextInfo();
+  }, []);
   return (
     <div>
       <div className={styles['chatbox-container']}>
@@ -159,7 +178,9 @@ const GoogleSignIn = () => {
       {isAuthed ? (
         <div>Authenticated</div>
       ) : (
-        <button onClick={handleLogin}>Sign in with Google</button>
+        <button onClick={handleLogin} className={styles['sign-in-google-button']}>
+          Sign in with Google
+        </button>
       )}
     </div>
   );

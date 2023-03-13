@@ -217,3 +217,25 @@
   border-radius: 5px;
 
 }
+.back-to-chat-button {
+  position: relative;
+  align-self: center;
+
+  border: none;
+  background-color: #b53f8a;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+
+}
+
+.sign-in-google-button {
+  position: relative;
+  align-self: center;
+
+  border: none;
+  background-color: #3f51b5;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}

@@ -5,7 +5,7 @@ export const uploadFile = async (file: File) => {
   const authToken = await getAuth().currentUser?.getIdToken();
   const instance = axios.create({
     headers: {
-      authorization: `Bearer: ${authToken}`,
+      authorization: `${authToken}`,
     },
   });
   const formData = new FormData();
@@ -15,7 +15,7 @@ export const uploadFile = async (file: File) => {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL!}/loadPdf`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL_DEV!}/loadPdf`,
     data: formData,
   });
   return r;
@@ -25,7 +25,7 @@ export const sendMessage = async (message: string) => {
   const authToken = await getAuth().currentUser?.getIdToken();
   const instance = axios.create({
     headers: {
-      authorization: `Bearer: ${authToken}`,
+      authorization: `${authToken}`,
     },
   });
   const r = await instance({
@@ -33,8 +33,25 @@ export const sendMessage = async (message: string) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL!}/chat_with_agent`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL_DEV!}/chat_with_agent`,
     data: { query: message },
+  });
+  return r;
+};
+
+export const getContextInfoFromDocuments = async () => {
+  const authToken = await getAuth().currentUser?.getIdToken();
+  const instance = axios.create({
+    headers: {
+      authorization: `${authToken}`,
+    },
+  });
+  const r = await instance({
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL_DEV!}/get_context_info_from_documents`,
   });
   return r;
 };
