@@ -68,7 +68,8 @@ export default function Layout({ children, home }: LayoutProps) {
         </div>
       )}
       <footer className={styles.footer}>
-        <p>quick build to learn ~ merk 🧰 </p>
+        <p></p>
+        <p>quick build to learn ~ merk 🧰 |</p>
         Follow me on Twitter
         <a href="https://twitter.com/0xmerkle" target="_blank" rel="noopener noreferrer">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16px" height="16px">
@@ -78,6 +79,8 @@ export default function Layout({ children, home }: LayoutProps) {
             />
           </svg>{' '}
         </a>
+        Inspired by Mathis, the creator of ChatPDF Follow him!
+        <a href="https://twitter.com/xathis">here</a>
       </footer>
     </div>
   );
