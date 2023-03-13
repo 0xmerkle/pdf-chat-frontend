@@ -11,6 +11,7 @@ import { uploadFile, sendMessage, getContextInfoFromDocuments } from '../api';
 import { auth } from '../firebase/firebase';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { userStore } from '../store/store';
+import { v4 as uuidv4 } from 'uuid';
 const Home: NextPage = () => {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
@@ -24,7 +25,7 @@ const Home: NextPage = () => {
   const getContextInfo = async () => {
     const r = await getContextInfoFromDocuments();
     console.log('r.data', r.data);
-    setMessages([{ from: 'chatbot', message: r.data.res }]);
+    setMessages([{ from: 'chatbot', message: r.data.res, id: uuidv4() }]);
   };
   const handleCloseChat = () => setShowChat(false);
   const handleOpenChat = () => setShowChat(true);
@@ -50,7 +51,7 @@ const Home: NextPage = () => {
   return (
     <Layout home>
       <Head>
-        <title>{'Chat PDF'}</title>
+        <title>{'Chat PDF Light'}</title>
       </Head>
       {!showChat && (
         <>
@@ -100,12 +101,14 @@ export default Home;
 export type UserMessage = {
   from: string;
   message: string;
+  id: string;
 };
 const Chat = () => {
   const [messages, setMessages] = useState<UserMessage[]>([]);
   const [message, setMessage] = useState<UserMessage>({
     from: 'user',
     message: '',
+    id: uuidv4(),
   });
   const chatMessages = userStore((state) => state.messages);
   const setChatMessages = userStore((state) => state.setMessages);
@@ -116,26 +119,19 @@ const Chat = () => {
       handleMessageSend();
     }
   };
-  const getContextInfo = async () => {
-    const r = await getContextInfoFromDocuments();
-    console.log('r.data', r.data);
-    setChatMessages([...messages, { from: 'chatbot', message: r.data.res }]);
-  };
 
   const handleMessageSend = async () => {
     setChatMessages([...messages, message]);
-    setMessage({ from: 'user', message: '' });
+    setMessage({ from: 'user', message: '', id: uuidv4() });
     setLoading(true);
     let tmpMessage = message;
     const r = await sendMessage(message.message);
     setLoading(false);
     console.log(r.data.res);
-    const aiMessage = { from: 'chatbot', message: r.data.res };
+    const aiMessage = { from: 'chatbot', message: r.data.res, id: uuidv4() };
     setChatMessages([...messages, tmpMessage, aiMessage]);
   };
-  // useEffect(() => {
-  //   getContextInfo();
-  // }, []);
+
   return (
     <div>
       <div className={styles['chatbox-container']}>
@@ -158,7 +154,9 @@ const Chat = () => {
             placeholder="Type your message here..."
             value={message.message}
             onKeyDown={(event) => handleKeyDown(event)}
-            onChange={(event) => setMessage({ from: 'user', message: event.target.value })}
+            onChange={(event) =>
+              setMessage({ from: 'user', message: event.target.value, id: uuidv4() })
+            }
           />
           <button onClick={handleMessageSend}>Send</button>
         </div>
