@@ -5,8 +5,8 @@ import Image from 'next/image';
 import utilStyles from '../styles/utils.module.css';
 import Link from 'next/link';
 
-const name = 'Chat PDF';
-export const siteTitle = 'Chat PDF';
+const name = 'Chat PDF Light';
+export const siteTitle = 'Chat PDF Light';
 
 interface LayoutProps {
   children: React.ReactNode;
