@@ -15,7 +15,7 @@ export const uploadFile = async (file: File) => {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL_DEV!}/loadPdf`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL!}/loadPdf`,
     data: formData,
   });
   return r;
@@ -33,7 +33,7 @@ export const sendMessage = async (message: string) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL_DEV!}/chat_with_agent`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL!}/chat_with_agent`,
     data: { query: message },
   });
   return r;
@@ -51,7 +51,7 @@ export const getContextInfoFromDocuments = async () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL_DEV!}/get_context_info_from_documents`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL!}/get_context_info_from_documents`,
   });
   return r;
 };
